@@ -46,20 +46,26 @@ The project is organized with the following folder structure:
 └── LICENSE.txt
 ```
 ## Execution
+### data/
+- This directory stores all the documents that are used for context retrieval
+  > Use custom documents by adding files to this directory and rerunning the 3_job-populate-vectordb job **Populate Vector DB with documents embeddings**, and then restarting the 4_app application **CML LLM Chatbot**
 ### 1_session-install-deps
 - Install python dependencies specified in 1_session-install-deps/requirements.txt
 ### 2_job-download-models
+Definition of the job **Download Models** 
 - Directly download specified models from huggingface repositories
 - These are pulled to new directories models/llm-model and models/embedding-model which can be replaced with any locally available pre-trained models
-> Customization: Use models of your choice by modifying 2_job-download-models/download_models.sh Then rerun the job **Download Models** and restart the application **CML LLM Chatbot**
+   > Use models of your choice by modifying 2_job-download-models/download_models.sh Then rerun the job **Download Models** and restart the application **CML LLM Chatbot**
 ### 3_job-populate-vectordb
+Definition of the job **Populate Vector DB with documents embeddings**
 - Start the milvus vector database and set database to be persisted in new directory milvus-data/
 - Generate embeddings for each document in data/
 - The embeddings vector for each document is inserted into the vector database
 - Stop the vector database
-> Customization: Change or add text files in the data/ directory to customize the knowledge base that is retrieved from. Rerun the job **Populate Vector DB with documents embeddings** to rebuild the vector database with the new embeddings and restart the application **CML LLM Chatbot**
+   > Change or add text files in the data/ directory to customize the knowledge base that is retrieved from. Rerun the job **Populate Vector DB with documents embeddings** to rebuild the vector database with the new embeddings and restart the application **CML LLM Chatbot**
 
 ### 4_app
+Definition of the application **CML LLM Chatbot**
 - Start the milvus vector database using persisted database data in milvus-data/
 - Load locally persisted pre-trained models from models/llm-model and models/embedding-model 
 - Start gradio interface which performs both retrieval-augmented LLM generation and regular LLM generation for bot responses.
