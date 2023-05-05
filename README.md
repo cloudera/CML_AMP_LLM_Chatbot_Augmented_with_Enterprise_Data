@@ -51,11 +51,14 @@ The project is organized with the following folder structure:
 ### 2_job-download-models
 - Directly download specified models from huggingface repositories
 - These are pulled to new directories models/llm-model and models/embedding-model which can be replaced with any locally available pre-trained models
+> Customization: Use models of your choice by modifying 2_job-download-models/download_models.sh Then rerun the job **Download Models** and restart the application **CML LLM Chatbot**
 ### 3_job-populate-vectordb
 - Start the milvus vector database and set database to be persisted in new directory milvus-data/
 - Generate embeddings for each document in data/
 - The embeddings vector for each document is inserted into the vector database
 - Stop the vector database
+> Customization: Change or add text files in the data/ directory to customize the knowledge base that is retrieved from. Rerun the job **Populate Vector DB with documents embeddings** to rebuild the vector database with the new embeddings and restart the application **CML LLM Chatbot**
+
 ### 4_app
 - Start the milvus vector database using persisted database data in milvus-data/
 - Load locally persisted pre-trained models from models/llm-model and models/embedding-model 
@@ -82,6 +85,6 @@ There are three ways to launch this prototype on CML:
 
 ### Resource Requirements
 This AMP creates the following resources:
-- CML Session: `4 CPU, 8GB MEM`
-- CML Jobs: `4 CPU, 8GB MEM`
-- CML Application: `4 CPU, 1 GPU, 24GB MEM`
+- CML Session: `1 CPU, 4GB MEM`
+- CML Jobs: `1 CPU, 4GB MEM`
+- CML Application: `2 CPU, 1 GPU, 16GB MEM`

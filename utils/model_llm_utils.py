@@ -10,6 +10,7 @@ class KeywordsStoppingCriteria(StoppingCriteria):
             return True
         return False
 
+# Load the model stored in models/llm-model
 print(f"Starting to load the LLM model")
 model = AutoModelForCausalLM.from_pretrained('models/llm-model', local_files_only=True, torch_dtype=torch.bfloat16, device_map="auto")
 

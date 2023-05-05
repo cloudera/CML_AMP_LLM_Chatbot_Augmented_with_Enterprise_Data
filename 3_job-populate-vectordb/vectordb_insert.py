@@ -6,8 +6,6 @@ import utils.model_embedding_utils as model_embedding
 import os
 from pathlib import Path
 
-
-
 def create_milvus_collection(collection_name, dim):
       if utility.has_collection(collection_name):
           utility.drop_collection(collection_name)
@@ -61,7 +59,8 @@ def main():
 
     print("Milvus database is up and collection is created")
 
-    # Read KB documents in data directory and insert embeddings into Vector DB for each doc
+    # Read KB documents in ./data directory and insert embeddings into Vector DB for each doc
+    # The default embeddings generation model specified in this AMP only generates embeddings for the first 256 tokens of text.
     doc_dir = './data'
     for file in Path(doc_dir).glob(f'**/*.txt'):
         with open(file, "r") as f: # Open file in read mode

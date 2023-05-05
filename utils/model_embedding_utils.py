@@ -2,6 +2,7 @@ import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModel
 
+# Load the model stored in models/embedding-model
 tokenizer = AutoTokenizer.from_pretrained('models/embedding-model', local_files_only=True)
 model = AutoModel.from_pretrained('models/embedding-model', local_files_only=True)
 
