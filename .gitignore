@@ -1,0 +1,15 @@
+question_answer.csv
+embedding_model
+llm-model-dol
+llm_model
+milvus-data-base
+milvus-data
+R
+node_modules
+.*
+*.pyc
+__pycache__
+*/__pycache__
+!.project-metadata.yaml
+!.gitignore
+!.experiments

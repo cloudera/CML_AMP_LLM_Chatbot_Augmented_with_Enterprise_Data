@@ -1,0 +1,7 @@
+pandas 
+milvus
+pymilvus
+gradio
+transformers
+torch
+accelerate
