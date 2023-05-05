@@ -1,5 +1,6 @@
 from milvus import default_server
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
+import subprocess
 
 import utils.model_embedding_utils as model_embedding
 
@@ -33,6 +34,8 @@ def insert_embedding(collection, id_path, text):
     collection.insert(data)
     
 def main():
+  # Reset the vector database files
+  print(subprocess.run(["rm -rf milvus-data"], shell=True))
 
   default_server.set_base_dir('milvus-data')
   default_server.start()
@@ -41,20 +44,8 @@ def main():
     connections.connect(alias='default', host='localhost', port=default_server.listen_port)   
     print(utility.get_server_version())
 
+    # Create/Recreate the Milvus collection
     collection_name = 'cloudera_ml_docs'
-    if utility.has_collection(collection_name):
-      collection = Collection(collection_name)
-      print("Milvus already has embeddings for this dataset, not inserting again")
-      
-      #TODO: improve to check number of embeddings to be non-zero
-      print('Total number of existing embeddings is {}.'.format(collection.num_entities))
-      connections.disconnect('default')
-      print("Stopping Milvus..")
-      default_server.stop()
-      return
-
-
-    print ("No existing collection found in Milvus, creating one")
     collection = create_milvus_collection(collection_name, 384)
 
     print("Milvus database is up and collection is created")

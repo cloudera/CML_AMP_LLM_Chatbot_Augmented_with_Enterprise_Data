@@ -53,12 +53,13 @@ tasks:
   - type: run_job
     entity_label: vectordb_insert
     short_summary: Populate Vector DB with documents embeddings
-    
+  
   - type: start_application
     name: CML LLM Chatbot
     subdomain: cmlllm
     script: 4_app/llm_rag_app.py
     short_summary: Start CML LLM Chatbot application
+    long_summary: This application requires an available GPU to run the LLM model. Startup may be delayed if autoscaling is being performed or fail if GPU cannot be scheduled on this workspace. Please contact your administrator for GPU scheduling.
     cpu: 2
     memory: 16
     gpu: 1

@@ -51,11 +51,13 @@ This directory stores all the individual documents that are used for context ret
 > TIP: Use custom documents by adding files to this directory and rerunning the job `Populate Vector DB with documents embeddings`, and then restarting the 4_app application `CML LLM Chatbot`
 ### 1_session-install-deps
 - Install python dependencies specified in 1_session-install-deps/requirements.txt
+
 ### 2_job-download-models
 Definition of the job **Download Models** 
 - Directly download specified models from huggingface repositories
 - These are pulled to new directories models/llm-model and models/embedding-model which can be replaced with any locally available pre-trained models
 > TIP: Use models of your choice by modifying `2_job-download-models/download_models.sh` Then rerun the job `Download Models` and restart the application `CML LLM Chatbot`
+
 ### 3_job-populate-vectordb
 Definition of the job **Populate Vector DB with documents embeddings**
 - Start the milvus vector database and set database to be persisted in new directory milvus-data/
