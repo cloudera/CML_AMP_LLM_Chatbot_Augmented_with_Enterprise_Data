@@ -1,4 +1,4 @@
-# LLM Chatbot Augmented with Enterprise Data
+# LLM Chatbot Augmented with Enterprise Data 
 
 This repository demonstrates how to use an open source pre-trained instruction-following LLM (Large Language Model) to build a ChatBot-like web application. The responses of the LLM are enhanced by giving it context from an internal knowledge base. This context is retrieved by using an open source Vector Database to do semantic search.
 
@@ -7,6 +7,14 @@ All the components of the application (knowledge base, context retrieval, prompt
 
 > **IMPORTANT**: Please read the following before proceeding.  By configuring and launching this AMP, you will cause h2oai/h2ogpt-oig-oasst1-512-6.9b, which is a third party large language model (LLM), to be downloaded and installed into your environment from the third party’s website.  Please see https://huggingface.co/h2oai/h2ogpt-oig-oasst1-512-6.9b for more information about the LLM, including the applicable license terms.  If you do not wish to download and install h2oai/h2ogpt-oig-oasst1-512-6.9b, do not deploy this repository.  By deploying this repository, you acknowledge the foregoing statement and agree that Cloudera is not responsible or liable in any way for h2oai/h2ogpt-oig-oasst1-512-6.9b. Author: Cloudera Inc.
 
+## Table of Contents  
+* [Enhancing Chatbot with Enterprise Context to reduce hallucination](#enhancing-chatbot-with-enterprise-context-to-reduce-hallucination)
+  + [Retrieval Augmented Generation (RAG) Architecture](#retrieval-augmented-generation--rag--architecture)
+* [Project Structure](#project-structure)
+  * [Execution](#execution)
+* [Troubleshooting](#troubleshooting)
+* [Limitations](#limitations)
+* [Technologies Used](#technologies-used)
 
 ## Enhancing Chatbot with Enterprise Context to reduce hallucination
 ![image](./images/rag-architecture.png)
@@ -45,20 +53,20 @@ The project is organized with the following folder structure:
 ├── README.md
 └── LICENSE.txt
 ```
-## Execution
-### data/
+### Execution
+#### data/
 This directory stores all the individual documents that are used for context retrieval in the chatbot application
 > TIP: Use custom documents by adding files to this directory and rerunning the job `Populate Vector DB with documents embeddings`, and then restarting the 4_app application `CML LLM Chatbot`
-### 1_session-install-deps
+#### 1_session-install-deps
 - Install python dependencies specified in 1_session-install-deps/requirements.txt
 
-### 2_job-download-models
+#### 2_job-download-models
 Definition of the job **Download Models** 
 - Directly download specified models from huggingface repositories
 - These are pulled to new directories models/llm-model and models/embedding-model which can be replaced with any locally available pre-trained models
 > TIP: Use models of your choice by modifying `2_job-download-models/download_models.sh` Then rerun the job `Download Models` and restart the application `CML LLM Chatbot`
 
-### 3_job-populate-vectordb
+#### 3_job-populate-vectordb
 Definition of the job **Populate Vector DB with documents embeddings**
 - Start the milvus vector database and set database to be persisted in new directory milvus-data/
 - Generate embeddings for each document in data/
@@ -67,12 +75,32 @@ Definition of the job **Populate Vector DB with documents embeddings**
 
 > TIP: Change or add text files in the data/ directory to customize the knowledge base that is retrieved from. Rerun the job `Populate Vector DB with documents embeddings` to rebuild the vector database with the new embeddings and restart the application `CML LLM Chatbot`
 
-### 4_app
+#### 4_app
 Definition of the application `CML LLM Chatbot`
 - Start the milvus vector database using persisted database data in milvus-data/
 - Load locally persisted pre-trained models from models/llm-model and models/embedding-model 
 - Start gradio interface 
 - The chat interface performs both retrieval-augmented LLM generation and regular LLM generation for bot responses.
+
+## Troubleshooting
+### Resource Requirements
+This AMP creates the following workloads with resource requirements:
+- CML Session: `1 CPU, 4GB MEM`
+- CML Jobs: `1 CPU, 4GB MEM`
+- CML Application: `2 CPU, 1 GPU, 16GB MEM`
+
+If user quotas are enabled, ensure you have enough available quota to launch these workloads.
+
+### Application Start Hanging/Failure
+![image](./images/FAQ_app-fail.png)
+Application startup failure or hanging without output is most likely caused by resource limitations in your CML Workspace.
+
+The application requires 1 GPU to perform the LLM text generation.
+- Check with your CML workspace administrator to enable GPUs on your CML workspace or to adjust auto-scaling rules for GPUs.
+- [CML Documentation: Autoscaling Groups](https://docs.cloudera.com/machine-learning/cloud/security/topics/ml-autoscale-groups.html)
+
+### Failed AMP steps
+CML AMPs cannot be resumed or retried, please relaunch the AMP from the AMP catalog or project creation page.
 
 ## Limitations
 ### Document size
@@ -81,6 +109,7 @@ Definition of the application `CML LLM Chatbot`
 ### Prompt Length
 - The loaded LLM Model h2ogpt-oig-oasst1-512-6.9b by default will only accept prompts of size 4096 tokens
   - The prompt length is affected by the context document retrieved, the user input, prompt template in `4_app/llm_rag_app.py`
+
 ## Technologies Used
 #### Open-Source Models and Utilities
 - [all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/tree/7dbbc90392e2f80f3d3c277d6e90027e55de9125)
@@ -98,9 +127,3 @@ There are three ways to launch this prototype on CML:
 
 1. **From Prototype Catalog** - Navigate to the Prototype Catalog on a CML workspace, select the "LLM Chatbot Augmented with Enterprise Data" tile, click "Launch as Project", click "Configure Project"
 2. **As ML Prototype** - In a CML workspace, click "New Project", add a Project Name, select "ML Prototype" as the Initial Setup option, copy in the [repo URL](https://github.com/cloudera/CML_AMP_LLM_Chatbot_Augmented_with_Enterprise_Data), click "Create Project", click "Configure Project"
-
-### Resource Requirements
-This AMP creates the following resources:
-- CML Session: `1 CPU, 4GB MEM`
-- CML Jobs: `1 CPU, 4GB MEM`
-- CML Application: `2 CPU, 1 GPU, 16GB MEM`
