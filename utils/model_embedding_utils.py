@@ -18,8 +18,9 @@ def get_embeddings(sentence):
     sentences = [sentence]
     
     # Tokenize sentences
-    # Truncate for now, only gets embeddings of the first 512 tokens of each doc. This may be
-    # enhanced later to handle larger number of tokens 
+    # Default model will truncate the document and only gets embeddings of the first 256 tokens.
+    # Semantic search will only be effective on these first 256 tokens.
+    # Context loading in 4_app context will still include the ENTIRE document file
     encoded_input = tokenizer(sentences, padding='max_length', truncation=True, return_tensors='pt')
 
     # Compute token embeddings

@@ -23,6 +23,8 @@ print(f"Finished loading the model and tokenizer")
 generator = pipeline('text-generation', model=model, tokenizer=tokenizer)
 
 # Generate text using loaded LLM model
+# Total prompt size is limited to 2048 tokens with the included model
+# the prompt includes (prompt template, user input, retrieved context)
 def get_llm_generation(prompt, stop_words, temperature=0.7, max_new_tokens=256, top_p=0.85, top_k=70, repetition_penalty=1.07, do_sample=False):
     stop_ids = [tokenizer.encode(w)[0] for w in stop_words]
     stop_criteria = KeywordsStoppingCriteria(stop_ids)

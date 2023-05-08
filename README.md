@@ -11,7 +11,7 @@ All the components of the application (knowledge base, context retrieval, prompt
 * [Enhancing Chatbot with Enterprise Context to reduce hallucination](#enhancing-chatbot-with-enterprise-context-to-reduce-hallucination)
   + [Retrieval Augmented Generation (RAG) Architecture](#retrieval-augmented-generation--rag--architecture)
 * [Project Structure](#project-structure)
-  * [Execution](#execution)
+  * [Implementation](#implementation)
 * [Troubleshooting](#troubleshooting)
 * [Limitations](#limitations)
 * [Technologies Used](#technologies-used)
@@ -53,20 +53,22 @@ The project is organized with the following folder structure:
 ├── README.md
 └── LICENSE.txt
 ```
-### Execution
-#### data/
+## Implementation
+### `data/`
 This directory stores all the individual documents that are used for context retrieval in the chatbot application
-> TIP: Use custom documents by adding files to this directory and rerunning the job `Populate Vector DB with documents embeddings`, and then restarting the 4_app application `CML LLM Chatbot`
-#### 1_session-install-deps
+> TIP: Use custom documents by adding files to this directory and rerunning the job `Populate Vector DB with documents embeddings`, and then restarting the 4_app application `CML LLM Chatbot`. 
+> - See recommendations on document size in the [limitations section](#limitations)
+
+### `1_session-install-deps`
 - Install python dependencies specified in 1_session-install-deps/requirements.txt
 
-#### 2_job-download-models
+### `2_job-download-models`
 Definition of the job **Download Models** 
 - Directly download specified models from huggingface repositories
 - These are pulled to new directories models/llm-model and models/embedding-model which can be replaced with any locally available pre-trained models
 > TIP: Use models of your choice by modifying `2_job-download-models/download_models.sh` Then rerun the job `Download Models` and restart the application `CML LLM Chatbot`
 
-#### 3_job-populate-vectordb
+### `3_job-populate-vectordb`
 Definition of the job **Populate Vector DB with documents embeddings**
 - Start the milvus vector database and set database to be persisted in new directory milvus-data/
 - Generate embeddings for each document in data/
@@ -75,7 +77,7 @@ Definition of the job **Populate Vector DB with documents embeddings**
 
 > TIP: Change or add text files in the data/ directory to customize the knowledge base that is retrieved from. Rerun the job `Populate Vector DB with documents embeddings` to rebuild the vector database with the new embeddings and restart the application `CML LLM Chatbot`
 
-#### 4_app
+### `4_app`
 Definition of the application `CML LLM Chatbot`
 - Start the milvus vector database using persisted database data in milvus-data/
 - Load locally persisted pre-trained models from models/llm-model and models/embedding-model 
@@ -90,8 +92,10 @@ This AMP creates the following workloads with resource requirements:
 - CML Application: `2 CPU, 1 GPU, 16GB MEM`
 
 If user quotas are enabled, ensure you have enough available quota to launch these workloads.
+### Failed AMP steps
+CML AMPs cannot be resumed or retried, please relaunch the AMP from the AMP catalog or project creation page.
 
-### Application Start Hanging/Failure
+#### Application Start Hanging/Failure
 ![image](./images/FAQ_app-fail.png)
 Application startup failure or hanging without output is most likely caused by resource limitations in your CML Workspace.
 
@@ -99,16 +103,26 @@ The application requires 1 GPU to perform the LLM text generation.
 - Check with your CML workspace administrator to enable GPUs on your CML workspace or to adjust auto-scaling rules for GPUs.
 - [CML Documentation: Autoscaling Groups](https://docs.cloudera.com/machine-learning/cloud/security/topics/ml-autoscale-groups.html)
 
-### Failed AMP steps
-CML AMPs cannot be resumed or retried, please relaunch the AMP from the AMP catalog or project creation page.
+### Text Generation Failures
+#### CUDA memory
+![image](./images/cuda_mem.png)
+The GPU you are launching on may be too small for the LLM and text generation being performed
+- Consider relaunching your application with multiple GPUs, the accelerate python package will split the workload accross both GPUs
+- Also consider decreasing the size of context documentation you are trying to load, see [Limitations](#limitations)
+#### Tensor Size
+![image](./images/tensor_size.png)
+- The final enhanced prompt input given to the LLM is larger than the prompt limit size of the LLM
+- Consider decreasing the size of context documentation you are trying to load, see [Limitations](#limitations)
 
 ## Limitations
 ### Document size
 - Only the first 256 tokens are considered with the included embeddings model all-MiniLM-L6-v2.
-  - The whole document file will still used in the context preparation in the enhanced prompt
+  - This means that the semantic search that occurs during context retrieval will be limited to the first 256 tokens of the document
+  - The **whole document file** will still used in the context preparation in the enhanced prompt.
+- If using large custom documents, it is recommended to split each document into smaller individual topic less than 500 words for better handling by the embeddings generator and to avoid Prompt Length limitations
 ### Prompt Length
-- The loaded LLM Model h2ogpt-oig-oasst1-512-6.9b by default will only accept prompts of size 4096 tokens
-  - The prompt length is affected by the context document retrieved, the user input, prompt template in `4_app/llm_rag_app.py`
+- The loaded LLM Model h2ogpt-oig-oasst1-512-6.9b by default will only accept prompts of size 2048 tokens
+  - The total prompt length is made up of the context document retrieved, the user input, the prompt template in `4_app/llm_rag_app.py`
 
 ## Technologies Used
 #### Open-Source Models and Utilities
@@ -123,7 +137,7 @@ CML AMPs cannot be resumed or retried, please relaunch the AMP from the AMP cata
 - [Gradio](https://github.com/gradio-app/gradio)
 
 ## Deploying on CML
-There are three ways to launch this prototype on CML:
+There are two ways to launch this prototype on CML:
 
 1. **From Prototype Catalog** - Navigate to the Prototype Catalog on a CML workspace, select the "LLM Chatbot Augmented with Enterprise Data" tile, click "Launch as Project", click "Configure Project"
 2. **As ML Prototype** - In a CML workspace, click "New Project", add a Project Name, select "ML Prototype" as the Initial Setup option, copy in the [repo URL](https://github.com/cloudera/CML_AMP_LLM_Chatbot_Augmented_with_Enterprise_Data), click "Create Project", click "Configure Project"
