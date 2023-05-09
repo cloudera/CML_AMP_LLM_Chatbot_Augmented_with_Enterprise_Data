@@ -1,7 +1,7 @@
 # This script is used to pre=download files stored with git-lfs in CML Runtimes which do not have git-lfs support
 # You can use any models that can be loaded with the huggingface transformers library. See utils/model_embedding_utls.py or utils/moderl_llm_utils.py
-EMBEDDING_MODEL_REPO="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2"
-EMBDEDDING_MODEL_COMMIT="7dbbc90392e2f80f3d3c277d6e90027e55de9125"
+EMBEDDING_MODEL_REPO="https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2"
+EMBDEDDING_MODEL_COMMIT="9e16800aed25dbd1a96dfa6949c68c4d81d5dded"
 
 LLM_MODEL_REPO="https://huggingface.co/h2oai/h2ogpt-oig-oasst1-512-6.9b"
 LLM_MODEL_COMMIT="4e336d947ee37d99f2af735d11c4a863c74f8541"

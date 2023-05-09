@@ -87,7 +87,7 @@ Definition of the application `CML LLM Chatbot`
 
 ## Technologies Used
 #### Open-Source Models and Utilities
-- [all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/tree/7dbbc90392e2f80f3d3c277d6e90027e55de9125)
+- [all-MiniLM-L12-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2/tree/9e16800aed25dbd1a96dfa6949c68c4d81d5dded)
      - Vector Embeddings Generation Model
 - [h2ogpt-oig-oasst1-512-6.9b](https://huggingface.co/h2oai/h2ogpt-oig-oasst1-512-6.9b/tree/4e336d947ee37d99f2af735d11c4a863c74f8541)
    - Instruction-following Large Language Model
