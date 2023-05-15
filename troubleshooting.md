@@ -1,4 +1,11 @@
 ## Troubleshooting
+
+### CML Instance Types
+- A GPU instance is required to perform inference on the LLM
+  - [CML Documentation: GPUs](https://docs.cloudera.com/machine-learning/cloud/gpu/topics/ml-gpu.html)
+- A P3 or newer GPU instance type is recommended
+  - The python libraries in this amp require a GPU with cuda compute capability 5.0 or higher. (i.e. V100(p3) or A100(p4))
+
 ### Resource Requirements
 This AMP creates the following workloads with resource requirements:
 - CML Session: `1 CPU, 4GB MEM`
