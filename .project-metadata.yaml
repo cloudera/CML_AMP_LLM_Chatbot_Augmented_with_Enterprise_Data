@@ -15,6 +15,25 @@ runtimes:
 
 tasks:
   - type: run_session
+    name: Validate GPU Availibility
+    script: 0_session-resource-validation/check_gpu_resources.py
+    short_summary: Check for GPU availibility. 
+    long_summary: Check GPUs are enabled on this workspace and are currently schedulable.
+    kernel: python3
+    cpu: 2
+    memory: 4
+  
+  - type: run_session
+    name: Validate GPU Capability
+    script: 0_session-resource-validation/check_gpu_capability.py
+    short_summary: Check for GPU capability. 
+    long_summary: Check GPU device supports the CUDA capabilities required.
+    kernel: python3
+    cpu: 2
+    memory: 4
+    gpu: 1
+
+  - type: run_session
     name: Install Dependencies
     script: 1_session-install-deps/install_dependencies.py
     short_summary: Install Dependencies

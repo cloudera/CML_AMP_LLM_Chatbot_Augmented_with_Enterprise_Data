@@ -9,15 +9,22 @@ All the components of the application (knowledge base, context retrieval, prompt
 
 > **IMPORTANT**: Please read the following before proceeding.  By configuring and launching this AMP, you will cause h2oai/h2ogpt-oig-oasst1-512-6.9b, which is a third party large language model (LLM), to be downloaded and installed into your environment from the third party’s website.  Please see https://huggingface.co/h2oai/h2ogpt-oig-oasst1-512-6.9b for more information about the LLM, including the applicable license terms.  If you do not wish to download and install h2oai/h2ogpt-oig-oasst1-512-6.9b, do not deploy this repository.  By deploying this repository, you acknowledge the foregoing statement and agree that Cloudera is not responsible or liable in any way for h2oai/h2ogpt-oig-oasst1-512-6.9b. Author: Cloudera Inc.
 
-## Table of Contents  
+## Table of Contents 
+#### README
 * [Enhancing Chatbot with Enterprise Context to reduce hallucination](#enhancing-chatbot-with-enterprise-context-to-reduce-hallucination)
   * [Retrieval Augmented Generation (RAG) Architecture](#retrieval-augmented-generation--rag--architecture)
+* [Requirements](#requirements)
 * [Project Structure](#project-structure)
   * [Implementation](#implementation)
 * [Technologies Used](#technologies-used)
 
-* [Troubleshooting](troubleshooting.md)
-  * [Limitations](troubleshooting.md#limitations)
+#### Guides
+* [Customization](guides/customization.md)
+    * [Knowledgebase](guides/customization.md#knowledgebase)
+    * [Models](guides/customization.md#Model)
+* [Troubleshooting](guides/troubleshooting.md)
+    * [AMP Failures](guides/troubleshooting.md#amp-failures)
+    * [Limitations](guides/troubleshooting.md#limitations)
 
 ## Enhancing Chatbot with Enterprise Context to reduce hallucination
 ![image](./images/rag-architecture.png)
@@ -38,7 +45,18 @@ For more detailed description of architectures like this and how it can enhance 
   - Create a prompt including the retrieved context and the user question
   - Return the LLM response in a web application
 
+## Requirements
+#### CML Instance Types
+- A GPU instance is required to perform inference on the LLM
+  - [CML Documentation: GPUs](https://docs.cloudera.com/machine-learning/cloud/gpu/topics/ml-gpu.html)
+- A CUDA 5.0+ capable GPU instance type is recommended
+  - The torch libraries in this AMP require a GPU with CUDA compute capability 5.0 or higher. (i.e. nVidia V100, A100, T4 GPUs)
 
+#### Resource Requirements
+This AMP creates the following workloads with resource requirements:
+- CML Session: `1 CPU, 4GB MEM`
+- CML Jobs: `1 CPU, 4GB MEM`
+- CML Application: `2 CPU, 1 GPU, 16GB MEM`
 
 ## Project Structure
 ### Folder Structure
@@ -46,6 +64,7 @@ For more detailed description of architectures like this and how it can enhance 
 The project is organized with the following folder structure:
 ```
 .
+├── 0_session-resource-validation/  # Script for checking CML workspace requirements
 ├── 1_session-install-deps/   # Setup script for installing python dependencies
 ├── 2_job-download-models/    # Setup scripts for downloading pre-trained models
 ├── 3_job-populate-vectordb/  # Setup scripts for initializing and populating a vector database with context documents
@@ -63,10 +82,6 @@ This directory stores all the individual sample documents that are used for cont
   - [CML](https://docs.cloudera.com/machine-learning/cloud/index.html)
   - [Iceberg](https://iceberg.apache.org/docs/1.2.0/)
   - [Ozone](https://docs.cloudera.com/cdp-private-cloud-base/7.1.8/ozone-overview/topics/ozone-introduction.html)
-  
-
-> TIP: Use custom documents by adding files to this directory and rerunning the job `Populate Vector DB with documents embeddings`, and then restarting the 4_app application `CML LLM Chatbot`. 
-> - See recommendations on document size in the [limitations section](TROUBLESHOOTING.md#limitations)
 
 ### `1_session-install-deps`
 - Install python dependencies specified in 1_session-install-deps/requirements.txt
@@ -74,8 +89,7 @@ This directory stores all the individual sample documents that are used for cont
 ### `2_job-download-models`
 Definition of the job **Download Models** 
 - Directly download specified models from huggingface repositories
-- These are pulled to new directories models/llm-model and models/embedding-model which can be replaced with any locally available pre-trained models
-> TIP: Use models of your choice by modifying `2_job-download-models/download_models.sh` Then rerun the job `Download Models` and restart the application `CML LLM Chatbot`
+- These are pulled to new directories models/llm-model and models/embedding-model
 
 ### `3_job-populate-vectordb`
 Definition of the job **Populate Vector DB with documents embeddings**
@@ -83,8 +97,6 @@ Definition of the job **Populate Vector DB with documents embeddings**
 - Generate embeddings for each document in data/
 - The embeddings vector for each document is inserted into the vector database
 - Stop the vector database
-
-> TIP: Change or add text files in the data/ directory to customize the knowledge base that is retrieved from. Rerun the job `Populate Vector DB with documents embeddings` to rebuild the vector database with the new embeddings and restart the application `CML LLM Chatbot`
 
 ### `4_app`
 Definition of the application `CML LLM Chatbot`
