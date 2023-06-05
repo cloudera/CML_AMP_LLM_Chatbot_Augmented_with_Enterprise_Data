@@ -4,7 +4,7 @@ The sample knowledge base included in this AMP can be modified or augmented to p
 
 0. Prepare your additional documents
    - Custom knowledgebase documents should conform to the following requirements:
-        * Less than 500 words (see [Limitations](guides/troubleshooting.md#limitations))
+        * Less than 500 words (see [Limitations](troubleshooting.md#limitations))
         * Ensure ASCII character encoding (i.e. avoid Smart Quotes)
 1. Add document files to the `/data` directory
 2. Rerun the job `Populate Vector DB with documents embeddings`
