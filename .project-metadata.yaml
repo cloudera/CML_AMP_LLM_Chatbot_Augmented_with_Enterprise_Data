@@ -11,7 +11,6 @@ runtimes:
   - editor: Workbench
     kernel: Python 3.9
     edition: Nvidia GPU
-    version: 2022.11
 
 tasks:
   - type: run_session
