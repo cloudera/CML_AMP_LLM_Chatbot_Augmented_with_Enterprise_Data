@@ -1,7 +1,7 @@
-pandas
+pandas==2.0.3
 milvus==2.2.8
 pymilvus==2.2.8
-gradio
-transformers
-torch
-accelerate
+gradio==3.37.0
+transformers==4.31.0
+torch==2.0.1
+accelerate==0.21.0
