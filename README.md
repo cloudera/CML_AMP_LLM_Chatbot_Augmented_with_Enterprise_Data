@@ -58,6 +58,13 @@ This AMP creates the following workloads with resource requirements:
 - CML Jobs: `1 CPU, 4GB MEM`
 - CML Application: `2 CPU, 1 GPU, 16GB MEM`
 
+#### External Resources
+This AMP requires pip packages and models from huggingface. Depending on your CML networking setup, you may need to whitelist some domains:
+- pypi.python.org
+- pypi.org
+- pythonhosted.org
+- huggingface.co
+
 ## Project Structure
 ### Folder Structure
 
