@@ -9,9 +9,12 @@ LLM_MODEL_COMMIT="4e336d947ee37d99f2af735d11c4a863c74f8541"
 
 download_lfs_files () {
     echo "These files must be downloaded manually since there is no git-lfs here:"
-    git ls-files | git check-attr --stdin filter | awk -F': ' '$3 ~ /lfs/ { print $1}' | while read line; do 
-        echo $(git remote get-url $(git remote))/resolve/$(git rev-parse HEAD)/${line}
-        curl -O -L $(git remote get-url $(git remote))/resolve/$(git rev-parse HEAD)/${line}
+    COMMIT=$1
+    git ls-files | git check-attr --stdin filter | awk -F': ' '$3 ~ /lfs/ { print $1}' | while read line; do
+        echo "Downloading ${line}"
+        echo $(git remote get-url $(git remote))/resolve/$COMMIT/${line}
+        curl -O -L $(git remote get-url $(git remote))/resolve/$COMMIT/${line}
+        echo "Downloading ${line} completed"
     done
 }
 
@@ -24,12 +27,12 @@ cd models
 GIT_LFS_SKIP_SMUDGE=1 git clone ${EMBEDDING_MODEL_REPO} --branch main embedding-model 
 cd embedding-model
 git checkout ${EMBDEDDING_MODEL_COMMIT}
-download_lfs_files
+download_lfs_files $EMBDEDDING_MODEL_COMMIT
 cd ..
   
 # Downloading LLM model that has been fine tuned to handle instructions/q&a
 GIT_LFS_SKIP_SMUDGE=1 git clone ${LLM_MODEL_REPO} --branch main llm-model
 cd llm-model
 git checkout ${LLM_MODEL_COMMIT}
-download_lfs_files
+download_lfs_files $LLM_MODEL_COMMIT
 cd ..
