@@ -17,7 +17,8 @@ def main():
                                      gradio.Textbox(label="Asking LLM with Context (RAG)")],
                             examples=["What are ML Runtimes?",
                                       "What kinds of users use CML?",
-                                      "How do data scientists use CML?"],
+                                      "How do data scientists use CML?",
+                                      "What are iceberg tables?"],
                             allow_flagging="never")
 
 
