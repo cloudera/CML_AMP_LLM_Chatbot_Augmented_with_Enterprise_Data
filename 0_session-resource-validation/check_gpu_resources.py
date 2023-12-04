@@ -44,7 +44,10 @@ def check_gpu_launch():
 
     print("Launched workers successfully. Shutting down the worker...")
     cdsw.stop_workers()
-
+    # Wait for 10 minutes to see if worker pod reaches success state
+    worker_schedule_status = cdsw.await_workers(
+        worker, wait_for_completion=True, timeout_seconds=600
+    )
     if len(worker_schedule_status["failures"]) == 1:
         cdsw.stop_workers(worker_schedule_status["failures"][0]["id"])
         # Failure at this point is due not enough GPU resources at the time of launch.
