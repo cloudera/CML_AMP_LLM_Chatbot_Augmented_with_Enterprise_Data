@@ -16,8 +16,9 @@ def check_gpu_enabled():
         auth=(API_KEY, ""),
     )
     max_gpu_per_engine = res.json().get("max_gpu_per_engine")
+    default_accelerator_label_id = res.json().get("default_accelerator_label_id")
 
-    if max_gpu_per_engine < 1:
+    if max_gpu_per_engine < 1 and (default_accelerator_label_id == 0 or default_accelerator_label_id is None):
         # Failure at this point is because GPUs are not eabled on this workspace.
         # Ask your admin about quota and autoscaling rules for GPU
         sys.exit(
