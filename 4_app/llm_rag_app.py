@@ -24,8 +24,8 @@ def main():
 
     # Launch gradio app
     print("Launching gradio app")
-    demo.launch(share=True,
-                enable_queue=True,
+    demo.queue().launch(share=False,
+                debug=True,
                 show_error=True,
                 server_name='127.0.0.1',
                 server_port=int(os.getenv('CDSW_APP_PORT')))
