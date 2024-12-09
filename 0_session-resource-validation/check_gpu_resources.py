@@ -1,6 +1,6 @@
 import os
-import cdsw
 import requests
+import cml.workers_v1 as workers
 
 # Check that the current workspace allows workloads to use GPUs
 def check_gpu_enabled():
@@ -29,28 +29,28 @@ def check_gpu_enabled():
 # Check that there are available GPUs or autoscalable GPUs available
 def check_gpu_launch():
     # Launch a worker that uses GPU to see if any gpu is available or autoscaling is possible
-    worker = cdsw.launch_workers(
+    worker = workers.launch_workers(
         n=1, cpu=2, memory=4, nvidia_gpu=1, code="print('GPU Available')"
     )
 
     # Wait for 10 minutes to see if worker pod reaches success state
-    worker_schedule_status = cdsw.await_workers(
+    worker_schedule_status = workers.await_workers(
         worker, wait_for_completion=True, timeout_seconds=600
     )
     if len(worker_schedule_status["failures"]) == 1:
-        cdsw.stop_workers(worker_schedule_status["failures"][0]["id"])
+        workers.stop_workers(worker_schedule_status["failures"][0]["id"])
         # Failure at this point is due not enough GPU resources at the time of launch.
         # Ask your admin about quota and autoscaling rules for GPU
         sys.exit("Unable to allocate GPU resource within 10 minutes")
 
     print("Launched workers successfully. Shutting down the worker...")
-    cdsw.stop_workers()
+    workers.stop_workers()
     # Wait for 10 minutes to see if worker pod reaches success state
-    worker_schedule_status = cdsw.await_workers(
+    worker_schedule_status = workers.await_workers(
         worker, wait_for_completion=True, timeout_seconds=600
     )
     if len(worker_schedule_status["failures"]) == 1:
-        cdsw.stop_workers(worker_schedule_status["failures"][0]["id"])
+        workers.stop_workers(worker_schedule_status["failures"][0]["id"])
         # Failure at this point is due not enough GPU resources at the time of launch.
         # Ask your admin about quota and autoscaling rules for GPU
         sys.exit("Unable to shutdown workers within 10 minutes")
