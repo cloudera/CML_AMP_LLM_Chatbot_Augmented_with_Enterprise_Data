@@ -1,5 +1,6 @@
 import os
 import requests
+import sys
 import cml.workers_v1 as workers
 
 # Check that the current workspace allows workloads to use GPUs
